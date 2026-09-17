@@ -10,6 +10,7 @@ on:
       - main
 
 permissions:
+      id-token: write
       contents: read          
 
 jobs:
@@ -30,6 +31,28 @@ jobs:
 
       - name: Build Docker Image
         run: docker build -t crm-backend .
+
+      - name: Build Docker Image
+        run: docker build -t crm-backend:latest .
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Image
+        run: |
+          docker tag crm-backend:latest \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/crm-backend:latest
+
+      - name: Push Image
+        run: |
+          docker push \
+          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/crm-backend:latest
 
       - name: Run Docker container 
         run: docker run -d --name backend-crm -p 8000:8000 -e DATABASE_URL="${{ secrets.DATABASE_URL }}" crm-backend
@@ -89,36 +112,6 @@ jobs:
       - name: Frontend Container Logs
         if: failure()
         run: docker logs crm-frontend-test   
-      
-      - name: SSH and Login to ECR
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            set -e
-
-            cd /home/ubuntu/CRM-V2-SerpHawk-main
-
-            # Login to ECR
-            aws ecr get-login-password \
-              --region ${{ secrets.AWS_REGION }} \
-              | docker login \
-                --username AWS \
-                --password-stdin \
-                ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
-      - name: Tag Image
-        run: |
-          docker tag crm-backend:latest \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/crm-backend:latest
-
-      - name: Push Image
-        run: |
-          docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/crm-backend:latest
-
         
       - name: Tag Frontend Image And Push Image
         run: |
