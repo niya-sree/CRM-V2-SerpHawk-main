@@ -1,0 +1,75 @@
+name : Build And Deploy Backend CRM Pipeline
+
+on: 
+  push:
+    branches:
+      - main
+
+  pull_requests:
+    branches: 
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt 
+          
+      - name: Build Docker Image
+        run: docker build -t crm-backend .
+
+      - name: Run Docker container 
+        run: docker run -d --name backend-crm -p 8000:8000 crm-backend
+     
+      - name: Test Backend 
+        run: | 
+          sleep 5 
+          curl --fail http://localhost:8080/health 
+      
+      - name: Show container Logs if test fails 
+        if: always() 
+        run: docker logs backend-crm
+
+      - name: Setup Node.js
+        uses: actions/steup-node@v5
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend 
+        run: npm ci
+
+      - name: Lint Frontend
+        working-directory: frontend
+        run: npm run lint
+      
+      - name: Build Frontend Docker Image 
+        run: | 
+          docker build -t crm-frontend ./frontend 
+      
+      - name: Run Frontend Container 
+        run: docker run -d --name crm-frontend-test -p 3000:3000 crm-frontend
+
+      - name: Build Frontend 
+        working-directory: frontend 
+        run: npm run build
+
+      - name: Test Frontend
+        run: |
+          sleep 10
+          curl --fail http://localhost:3000
+
+      - name: Frontend Container Logs
+        if: failure()
+        run: docker logs crm-frontend-test   
+
