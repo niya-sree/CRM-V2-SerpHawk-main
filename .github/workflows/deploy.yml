@@ -52,6 +52,27 @@ jobs:
       - name: Show container Logs if test fails 
         if: failure() 
         run: docker logs backend-crm
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws.credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Tag And Push Image To ECR 
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: crm-repo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker tag crm-backend:latest $ECR_REGISTRY/crm-repo:$IMAGE_TAG
+          
+          # Push it to AWS
+          docker push $ECR_REGISTRY/crm-repo:$IMAGE_TAG
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
