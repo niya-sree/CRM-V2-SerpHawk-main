@@ -31,7 +31,7 @@ jobs:
         run: docker build -t crm-backend .
 
       - name: Run Docker container 
-        run: docker run -d --name backend-crm -p 8000:8000 crm-backend
+        run: docker run -d --name backend-crm -p 8000:8000 -e DATABASE_URL="${{ secrets.DATABASE_URL }}" crm-backend
      
       - name: Test Backend 
         run: | 
