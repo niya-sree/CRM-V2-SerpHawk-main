@@ -64,23 +64,23 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-          # Login to Amazon ECR
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
-          docker login --username AWS --password-stdin \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            # Login to Amazon ECR
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+            docker login --username AWS --password-stdin \
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-          # Set variables
-          ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-          ECR_REPOSITORY="crm-repo"
-          IMAGE_TAG="${{ github.sha }}"
+            # Set variables
+            ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+            ECR_REPOSITORY="crm-repo"
+            IMAGE_TAG="${{ github.sha }}"
 
-          # Tag the existing Docker image
-          docker tag crm-backend:latest \
-          $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            # Tag the existing Docker image
+            docker tag crm-backend:latest \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-          # Push image to ECR
-          docker push \
-          $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            # Push image to ECR
+            docker push \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
