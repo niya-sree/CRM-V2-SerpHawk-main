@@ -71,3 +71,8 @@ frontend.log
 *.db
 
 *cleaned_contacts.xlsx
+
+static/uploads/*
+static/uploads/*.pdf
+customer/contact exports
+

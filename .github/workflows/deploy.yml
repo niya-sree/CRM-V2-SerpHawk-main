@@ -1,16 +1,16 @@
-name : Build And Deploy Backend CRM Pipeline
+name: Build And Test CRM Pipeline
 
 on: 
   push:
     branches:
       - main
 
-  pull_requests:
+  pull_request:
     branches: 
       - main
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,10 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: install dependencies
+      - name: Install Dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt 
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt 
           
       - name: Build Docker Image
         run: docker build -t crm-backend .
@@ -35,15 +35,28 @@ jobs:
      
       - name: Test Backend 
         run: | 
-          sleep 5 
-          curl --fail http://localhost:8080/health 
+          for i in {1..12}; do 
+            if curl --fail http://localhost:8000/health; then 
+              echo "Backend is healthy" 
+              exit 0 
+            fi 
+          
+            echo "Backend not ready yet... attempt $i/12" 
+            sleep 5
+
+          done 
+          
+          echo "Backend failed health check" 
+          exit 1 
       
       - name: Show container Logs if test fails 
-        if: always() 
+        if: failure() 
         run: docker logs backend-crm
 
       - name: Setup Node.js
-        uses: actions/steup-node@v5
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
 
       - name: Install Frontend Dependencies
         working-directory: frontend 
@@ -60,14 +73,21 @@ jobs:
       - name: Run Frontend Container 
         run: docker run -d --name crm-frontend-test -p 3000:3000 crm-frontend
 
-      - name: Build Frontend 
-        working-directory: frontend 
-        run: npm run build
-
       - name: Test Frontend
         run: |
-          sleep 10
-          curl --fail http://localhost:3000
+          for i in {1..12}; do 
+            if curl --fail http://localhost:3000; then 
+              echo "Frontend is healthy" 
+              exit 0
+
+              fi 
+              
+              echo "Frontend not ready yet... attempt $i/12" 
+              sleep 5 
+            done 
+            
+            echo "Frontend failed health check" 
+            exit 1
 
       - name: Frontend Container Logs
         if: failure()
