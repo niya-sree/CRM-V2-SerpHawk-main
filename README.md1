@@ -90,6 +90,23 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000  # local development
 6. GitHub Actions for CI/CD or Jenkins.
 7. Access the application on the browser using url http://ec2-ip:3000.
 
+## Database-related configuration:
+
+database.py  -- configures the application's connection to the PostgreSQL/Neon 
+database.
+create_tables.py -- creates the required database tables.
+migrate_db.py -- handles database schema migrations.
+seed_db.py -- inserts initial/sample data into the database.
+
+## Fronend configuration files:
+
+Dockerfile
+frontend/next.config.ts
+frontend/package.json
+frontend/package-lock.json
+frontend/tsconfig.json
+frontend/.dockerignore
+
 ###########################
 
 
