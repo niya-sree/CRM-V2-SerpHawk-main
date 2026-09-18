@@ -10,8 +10,8 @@ on:
       - main
 
 permissions:
-      id-token: write
-      contents: read          
+  id-token: write
+  contents: read          
 
 jobs:
   build-and-test:
@@ -27,13 +27,17 @@ jobs:
           python-version: "3.14"
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Build Docker Image
-        run: docker build -t crm-backend .
+        run: pip install -r requirements.
 
       - name: Build Docker Image
         run: docker build -t crm-backend:latest .
+      
+      - name: Show GitHub OIDC context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "Ref name: $GITHUB_REF_NAME"
+          echo "Event: $GITHUB_EVENT_NAME"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
