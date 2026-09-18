@@ -32,13 +32,22 @@ jobs:
       - name: Build Docker Image
         run: docker build -t crm-backend:latest .
       
-      - name: Show GitHub OIDC context
-        run: |
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Ref: $GITHUB_REF"
-          echo "Ref name: $GITHUB_REF_NAME"
-          echo "Event: $GITHUB_EVENT_NAME"
+      - name: Debug OIDC
+        uses: actions/github-script@v7  
+        with:
+        script: |
+          const token = await core.getIDToken('sts.amazonaws.com');
+          const payload = JSON.parse(
+          Buffer.from(token.split('.')[1], 'base64url').toString()
+          );
 
+          console.log('OIDC issuer:', payload.iss);
+          console.log('OIDC audience:', payload.aud);
+          console.log('OIDC subject:', payload.sub);
+ 
+      - name: Test AWS identity
+        run: aws sts get-caller-identity
+ 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
