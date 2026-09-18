@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: SSH And Deploy on EC2
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -27,6 +27,14 @@ jobs:
             set -e 
 
             cd /home/ubuntu/CRM-V2-SerpHawk-main
+            
+            mkdir -p ~/.ssh
+            chmod 700 ~/.ssh
+
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+            chmod 644 ~/.ssh/known_hosts
+
+            ssh -T git@github.com || true
 
             git pull origin main
             
