@@ -80,15 +80,19 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000  # local development
 2. Install dependencies: `npm install`
 3. Start dev server: `npm run dev`
 
-## Local Development
+## Deployment on AWS EC2
 
-### Backend
+1. Create EC2 server on AWS 
+2. Clone the repository from GitHub Account
+3. Build and test locally on EC2 server.
+4. Use docker compose file or kubernetes manifests to automate deployment process.
+5. Write environment variables in .env file or ConfigMap/Secret yaml file if it is kubernetes.
+6. GitHub Actions for CI/CD or Jenkins.
+7. Access the application on the browser using url http://ec2-ip:3000.
 
-1. Create virtual environment: `python -m venv .venv`
-2. Activate: `source .venv/bin/activate`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run migrations: `python create_tables.py`
-5. Start server: `uvicorn main:app --reload`
+###########################
+
+
   
 
 
