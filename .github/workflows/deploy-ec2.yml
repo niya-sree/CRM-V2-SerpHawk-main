@@ -2,13 +2,14 @@ name: Deploy on EC2
 
 on:
   workflow_run:
-    workflows: ["Build and Test"]
+    workflows: 
+      - Build And Test CRM Pipeline
     types:
       - completed
 jobs:
   deploy:
     # Deploy only if Build and Test succeeded
-    if: ${{ github.event.workflow_run.conclusion == 'success/completed' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
