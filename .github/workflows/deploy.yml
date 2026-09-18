@@ -53,6 +53,13 @@ jobs:
           echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF"
           echo "GITHUB_SERVER_URL=$GITHUB_SERVER_URL"
       
+      - name: Verify AWS role configuration
+        env:
+          ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+        run: |
+          echo "Role configured: ${ROLE_ARN:+yes}"
+          echo "Role starts with expected account: ${ROLE_ARN#arn:aws:iam::443920089274:role/}"
+    
       - name: Test AWS identity
         run: aws sts get-caller-identity
  
