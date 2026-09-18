@@ -35,15 +35,15 @@ jobs:
       - name: Debug OIDC
         uses: actions/github-script@v7  
         with:
-        script: |
-          const token = await core.getIDToken('sts.amazonaws.com');
-          const payload = JSON.parse(
-          Buffer.from(token.split('.')[1], 'base64url').toString()
-          );
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const payload = JSON.parse(
+            Buffer.from(token.split('.')[1], 'base64url').toString()
+            );
 
-          console.log('OIDC issuer:', payload.iss);
-          console.log('OIDC audience:', payload.aud);
-          console.log('OIDC subject:', payload.sub);
+            console.log('OIDC issuer:', payload.iss);
+            console.log('OIDC audience:', payload.aud);
+            console.log('OIDC subject:', payload.sub);
  
       - name: Test AWS identity
         run: aws sts get-caller-identity
