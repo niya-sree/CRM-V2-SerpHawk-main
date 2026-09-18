@@ -44,7 +44,15 @@ jobs:
             console.log('OIDC issuer:', payload.iss);
             console.log('OIDC audience:', payload.aud);
             console.log('OIDC subject:', payload.sub);
- 
+      
+      - name: Debug GitHub context
+        run: |
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER"
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF"
+          echo "GITHUB_SERVER_URL=$GITHUB_SERVER_URL"
+      
       - name: Test AWS identity
         run: aws sts get-caller-identity
  
