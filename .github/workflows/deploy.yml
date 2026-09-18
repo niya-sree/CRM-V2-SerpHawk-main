@@ -27,7 +27,7 @@ jobs:
           python-version: "3.14"
 
       - name: Install Dependencies
-        run: pip install -r requirements.
+        run: pip install -r requirements.txt
 
       - name: Build Docker Image
         run: docker build -t crm-backend:latest .
