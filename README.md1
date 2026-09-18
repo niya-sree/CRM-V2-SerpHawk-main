@@ -1,0 +1,96 @@
+# SERP Hawk CRM V2
+
+AI-Powered CRM for SEO Agencies | Next.js + FastAPI + PostgreSQL + OpenAI
+
+## Overview
+
+SERP Hawk CRM V2 is a comprehensive customer relationship management system designed specifically for SEO agencies and digital marketing firms. It manages the entire client lifecycle from cold outreach to project delivery, billing, and SEO monitoring.
+
+### Key Features
+
+- **Role-Based Access**: Admin, Employee, Intern, Client roles with appropriate permissions
+- **AI Email Agent**: Automated company research and personalized email generation
+- **Real-Time Messaging**: WebSocket-based chat system
+- **Service Management**: Catalog, quotes, invoicing, and billing
+- **SEO Tools**: Keyword rankings, competitor analysis, SEO audits
+- **Document Management**: File uploads, OCR for business cards
+- **Reporting**: PDF exports, monitoring dashboards
+
+## Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion
+- **Backend**: FastAPI (Python 3.13), SQLModel ORM, Uvicorn with WebSocket
+- **Database**: PostgreSQL (Neon Serverless)
+
+## Deployment Guide
+
+### Prerequisites
+
+- Node.js 18+
+- Python 3.13+
+- PostgreSQL database (Neon recommended)
+- GitHub account
+### Backend Deployment
+#### Option 3: Manual Server
+
+1. Set up a server with Python 3.13+
+2. Install dependencies: `pip install -r requirements.txt`
+3. Set environment variables
+4. Run with: `uvicorn main:app --host 0.0.0.0 --port 8000`
+### Frontend Deployment
+
+#### Option 1: Vercel (Recommended for Next.js)
+
+1. Create a Vercel account at [vercel.com](https://vercel.com)
+2. Connect your GitHub repository
+3. Set the root directory to `frontend`
+4. Add environment variables:
+   - `wat `: Your backend API URL
+5. Deploy automatically
+
+### Database Setup
+
+1. Create a Neon PostgreSQL database at [neon.tech](https://neon.tech)
+2. Run the database migrations: `python create_tables.py`
+3. Seed initial data: `python seed_db.py`
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```
+DATABASE_URL=postgresql://user:password@host:port/database
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000  # local development
+# In Vercel set Environment Variable (Production):
+# NEXT_PUBLIC_API_BASE_URL=https://crm-v2-serp-hawk-main.vercel.app/login
+
+## Local Development
+
+### Backend
+
+1. Create virtual environment: `python -m venv .venv`
+2. Activate: `source .venv/bin/activate`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run migrations: `python create_tables.py`
+5. Start server: `uvicorn main:app --reload`
+
+### Frontend
+
+1. Navigate to frontend: `cd frontend`
+2. Install dependencies: `npm install`
+3. Start dev server: `npm run dev`
+
+## Local Development
+
+### Backend
+
+1. Create virtual environment: `python -m venv .venv`
+2. Activate: `source .venv/bin/activate`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run migrations: `python create_tables.py`
+5. Start server: `uvicorn main:app --reload`
+  
+
+
+
+
